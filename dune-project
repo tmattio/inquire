@@ -13,8 +13,8 @@
  (name inquire)
  (synopsis "An OCaml library to create beautiful interactive CLIs")
  (depends
+  (alcotest :with-test)
   dune
-  alcotest
   base
   lwt
   lambda-term))
