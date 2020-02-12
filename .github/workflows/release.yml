@@ -35,6 +35,9 @@ jobs:
       - name: Run tests
         run: opam exec -- make test
 
+      - name: Build documentation
+        run: opam exec -- make doc
+
       - name: Deploy documentation
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
