@@ -1,9 +1,12 @@
-name: CI
+name: Release
 
-on: [push, pull_request]
+on:
+  push:
+    tags:
+      - v*
 
 jobs:
-  build:
+  publish:
     name: Build and test
     runs-on: ${{ matrix.os }}
     strategy:
@@ -31,3 +34,10 @@ jobs:
 
       - name: Run tests
         run: opam exec -- make test
+
+      - name: Deploy documentation
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: _build/default/_doc/_html/
