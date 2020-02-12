@@ -27,7 +27,7 @@ jobs:
         run: opam install -t . --deps-only
 
       - name: Build
-        run: opam exec -- make build
+        run: opam exec -- make
 
       - name: Run tests
         run: opam exec -- make test

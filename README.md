@@ -85,7 +85,7 @@ You need Opam, you can install it by following [Opam's documentation](https://op
 With Opam installed, you can build the project with:
 
 ```bash
-make build
+make
 ```
 
 ### Running Examples
