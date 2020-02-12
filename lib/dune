@@ -1,0 +1,8 @@
+(library
+ (name Inquire)
+ (public_name inquire.lib)
+ (modules (:standard))
+ (libraries base lwt lambda-term)
+ (flags -open Base))
+
+(include_subdirs unqualified)

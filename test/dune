@@ -1,0 +1,6 @@
+(tests
+ (names style_test)
+ (libraries base alcotest inquire.lib)
+ (flags -open Base -linkall -g -w -9))
+
+(include_subdirs unqualified)
