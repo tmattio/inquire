@@ -123,6 +123,12 @@ This assumes you have a command like [open-cli](https://github.com/sindresorhus/
 
 > NOTE: On macOS, you can use the system command `open`, for instance `open _build/default/_doc/_html/index.html`
 
+### Create new releases
+
+To create a release and publish it on Opam, you can run the script `scripts/release.sh`. It will create a tag with the version found in `inquire.opam`, and push it on your repository.
+
+From there, the CI/CD will take care of publishing your documentation, create a github release, and open a PR with your version on `opam-repository`.
+
 ### Repository Structure
 
 The following snippet describes Inquire's repository structure.
