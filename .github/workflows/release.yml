@@ -35,14 +35,19 @@ jobs:
       - name: Build
         run: opam exec -- make
 
-      - name: Build documentation
-        run: opam exec -- make doc
+      - run: |
+          mkdir -p "$HOME/.config/dune/"
+          echo "${{ secrets.GITHUB_TOKEN }}" > "$HOME/.config/dune/github.token"
+          git clone https://github.com/tmattio/opam-repository.git $HOME/git/opam-repository
 
       - name: Create a package distribution archive
         run: opam exec -- dune-release distrib
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@master
-        with:
-          name: inquire
-          path: _build/inquire-${{ github.ref }}.tbz
+      - name: Publish documentation and release archive
+        run: opam exec -- dune-release publish --change-log=CHANGELOG.md
+
+      - name: Create an Opam package
+        run: opam exec -- dune-release opam pkg
+
+      # - name: Release on Opam
+      #   run: opam exec -- dune-release opam submit --no-auto-open -y
