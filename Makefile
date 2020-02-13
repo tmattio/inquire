@@ -24,4 +24,7 @@ watch:
 utop:
 	dune utop lib -- -implicit-bindings
 
+release:
+	./release.sh
+
 .PHONY: all clean
