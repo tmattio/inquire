@@ -29,17 +29,20 @@ jobs:
       - name: Install dependencies
         run: opam install -t . --deps-only
 
+      - name: Install additional Opam dependencies
+        run: opam install -y odoc dune-release
+
       - name: Build
         run: opam exec -- make
 
       - name: Run tests
         run: opam exec -- make test
 
-      - name: Install odoc
-        run: opam install -y odoc
-
       - name: Build documentation
         run: opam exec -- make doc
+
+      - name: Create a package distribution archive
+        run: opam exec -- dune-release distrib
 
       - name: Deploy documentation
         uses: JamesIves/github-pages-deploy-action@releases/v3
@@ -47,3 +50,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
           FOLDER: _build/default/_doc/_html/
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@master
+        with:
+          name: inquire
+          path: _build/inquire-${{ github.ref }}.tbz
