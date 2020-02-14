@@ -1,4 +1,9 @@
 #!/bin/bash
+# Usage: script/release.sh
+#
+# Push a new git tag on the remote repository with the version found in dune-project
+
+set -e
 
 changes=$(git status --porcelain)
 branch=$(git rev-parse --abbrev-ref HEAD)
