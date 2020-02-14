@@ -1,6 +1,7 @@
 .PHONY: all test clean doc doc-path format watch utop release
 
 all:
+	dune build @install
 	dune build
 
 test:

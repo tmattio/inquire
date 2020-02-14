@@ -17,6 +17,10 @@
  (depends
   (ocaml (>= 4.06.0))
   (dune (and :build (> 1.5)))
+  (dune-release :dev)
+  (merlin :dev)
+  (odoc :dev)
+  (utop :dev)
   (alcotest :with-test)
   base
   lwt
