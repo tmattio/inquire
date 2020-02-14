@@ -1,32 +1,22 @@
 open Alcotest
 open Inquire
 
-(** Test suite for the Utils module. *)
-
 let test_apply_color c () =
-  (check string)
-    "same string"
-    "\027[31mtest\027[39m"
-    (Style.Ascii.apply_color "test" ~color:c)
+  let generated = Style.Ascii.apply_color "test" ~color:c in
+  check string "same string" "\027[31mtest\027[39m" generated
 
 let test_apply_bold () =
-  (check string)
-    "same string"
-    "\027[1mtest\027[22m"
-    (Style.Ascii.apply_bold "test" ~bold:true)
+  let generated = Style.Ascii.apply_bold "test" ~bold:true in
+  check string "same string" "\027[1mtest\027[22m" generated
 
 let test_compose () =
-  (check string)
-    "same string"
-    "\027[31m\027[1mtest\027[22m\027[39m"
-    (Style.Ascii.apply "test" ~style:(Style.make [ Style.bold; Style.color Red ]))
+  let generated =
+    Style.Ascii.apply "test" ~style:(Style.make [ Style.bold; Style.color Red ])
+  in
+  check string "same string" "\027[31m\027[1mtest\027[22m\027[39m" generated
 
-let () =
-  run
-    "test-alcotest"
-    [ ( "Style"
-      , [ test_case "can apply color red" `Quick (test_apply_color Style.Red)
-        ; test_case "can apply bold" `Quick test_apply_bold
-        ; test_case "can compose" `Quick test_compose
-        ] )
-    ]
+let suite =
+  [ "can apply color red", `Quick, test_apply_color Style.Red
+  ; "can apply bold", `Quick, test_apply_bold
+  ; "can compose", `Quick, test_compose
+  ]
