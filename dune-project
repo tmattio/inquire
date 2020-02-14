@@ -15,8 +15,9 @@
  (synopsis "An OCaml library to create beautiful interactive CLIs")
  (description "An OCaml library to create beautiful interactive CLIs")
  (depends
+  (ocaml (>= 4.06.0))
+  (dune (and :build (> 1.5)))
   (alcotest :with-test)
-  dune
   base
   lwt
   lambda-term))

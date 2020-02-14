@@ -5,7 +5,7 @@ module Style = Style
 (** Modude to create styled string in the terminal. *)
 
 module Make = Factory.Make
-(** Create a new implementation of Inquire to customize the prompts.  *)
+(** Create a new implementation of Inquire to customize the prompts. *)
 
 module Minimal = Minimal_impl
 (** Minimal implementation of Inquire with no color and no prompt prefixes. *)
@@ -33,8 +33,8 @@ val raw_list
   -> String.t Lwt.t
 (** Prompt the user to chose a value from the given options.
 
-    The options will be listed with an index prefixed and the users will have
-    to enter the index of their choice.
+    The options will be listed with an index prefixed and the users will have to
+    enter the index of their choice.
 
     {4 Examples}
 
