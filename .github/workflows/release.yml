@@ -44,7 +44,7 @@ jobs:
         run: opam exec -- dune-release distrib
 
       - name: Publish documentation and release archive
-        run: opam exec -- dune-release publish --change-log=CHANGELOG.md -y
+        run: opam exec -- dune-release publish -y
 
       - name: Create an Opam package
         run: opam exec -- dune-release opam pkg
