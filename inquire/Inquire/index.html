@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Inquire (inquire.Inquire)</title><link rel="stylesheet" href="../../odoc.css"/><meta charset="utf-8"/><meta name="generator" content="odoc %%VERSION%%"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><script src="../../highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body><div class="content"><header><nav><a href="../index.html">Up</a> – <a href="../index.html">inquire</a> &#x00BB; Inquire</nav><h1>Module <code>Inquire</code></h1><p>Inquire is a high-level library to create interactive command line interfaces.</p></header><dl><dt class="spec module" id="module-Style"><a href="#module-Style" class="anchor"></a><code><span class="keyword">module</span> <a href="Style/index.html">Style</a> : <span class="keyword">sig</span> ... <span class="keyword">end</span></code></dt><dd><p>Modude to create styled string in the terminal.</p></dd></dl><dl><dt class="spec module" id="module-Make"><a href="#module-Make" class="anchor"></a><code><span class="keyword">module</span> Make = <a href="../Inquire__/Factory/index.html#module-Make">Inquire__.Factory.Make</a></code></dt><dd><p>Create a new implementation of Inquire to customize the prompts.</p></dd></dl><dl><dt class="spec module" id="module-Minimal"><a href="#module-Minimal" class="anchor"></a><code><span class="keyword">module</span> Minimal = <a href="../Inquire__/index.html#module-Minimal_impl">Inquire__.Minimal_impl</a></code></dt><dd><p>Minimal implementation of Inquire with no color and no prompt prefixes.</p></dd></dl><dl><dt class="spec module" id="module-Default"><a href="#module-Default" class="anchor"></a><code><span class="keyword">module</span> Default = <a href="../Inquire__/index.html#module-Default_impl">Inquire__.Default_impl</a></code></dt><dd><p>Default implementation of Inquire with hopefully nice colors and prefixes.</p></dd></dl><dl><dt class="spec value" id="val-confirm"><a href="#val-confirm" class="anchor"></a><code><span class="keyword">val</span> confirm : <span>?&#8288;default:Base.bool</span> <span>&#45;&gt;</span> Base.String.t <span>&#45;&gt;</span> <span>Base.bool Lwt.t</span></code></dt><dd><p>Prompt the user to answer the given message with &quot;y&quot; or &quot;n&quot;.</p><h5 id="examples"><a href="#examples" class="anchor"></a>Examples</h5><pre><code class="ml">let result =
+  Inquire.confirm &quot;Are you sure?&quot; ~default:true &gt;&gt;= fun choice -&gt;
+  if choice then Lwt_io.printl &quot;Yes!&quot; else Lwt_io.printl &quot;No!&quot;
+in
+Lwt_main.run result</code></pre></dd></dl><dl><dt class="spec value" id="val-raw_list"><a href="#val-raw_list" class="anchor"></a><code><span class="keyword">val</span> raw_list : <span>?&#8288;default:Base.bool</span> <span>&#45;&gt;</span> <span>options:<span>Base.string Base.list</span></span> <span>&#45;&gt;</span> Base.String.t <span>&#45;&gt;</span> <span>Base.String.t Lwt.t</span></code></dt><dd><p>Prompt the user to chose a value from the given options.</p><p>The options will be listed with an index prefixed and the users will have to enter the index of their choice.</p><h5 id="examples"><a href="#examples" class="anchor"></a>Examples</h5><pre><code class="ml">let movies =
+  [ &quot;Star Wars: The Rise of Skywalker&quot;
+  ; &quot;Solo: A Star Wars Story&quot;
+  ; &quot;Star Wars: The Last Jedi&quot;
+  ; &quot;Rogue One: A Star Wars Story&quot;
+  ; &quot;Star Wars: The Force Awakens&quot;
+  ]
+in
+let result =
+  Inquire.raw_list &quot;What's your favorite movie?&quot; ~options:movies
+  &gt;&gt;= fun movie -&gt; Lwt_io.printlf &quot;Indeed, %S is a great movie!&quot; movie
+in
+Lwt_main.run result</code></pre></dd></dl><dl><dt class="spec value" id="val-password"><a href="#val-password" class="anchor"></a><code><span class="keyword">val</span> password : Base.String.t <span>&#45;&gt;</span> <span>Base.String.t Lwt.t</span></code></dt><dd><p>Prompt the user to enter a password that will be hidden with stars ('*').</p><p>The password can take any value, except the empty string.</p><h5 id="examples"><a href="#examples" class="anchor"></a>Examples</h5><pre><code class="ml">let result =
+  Inquire.password &quot;Enter your password:&quot; &gt;&gt;= fun password -&gt;
+  Lwt_io.printlf &quot;Your new password is: %S&quot; password
+in
+Lwt_main.run result</code></pre></dd></dl><dl><dt class="spec value" id="val-input"><a href="#val-input" class="anchor"></a><code><span class="keyword">val</span> input : Base.String.t <span>&#45;&gt;</span> <span>Base.String.t Lwt.t</span></code></dt><dd><p>Prompt the user to input a string.</p><p>The string can take any value, except the empty string.</p><h5 id="examples"><a href="#examples" class="anchor"></a>Examples</h5><pre><code class="ml">let result =
+  Inquire.input &quot;Enter a value:&quot; &gt;&gt;= fun value -&gt;
+  Lwt_io.printlf &quot;You entered: %S&quot; value
+in
+Lwt_main.run result</code></pre></dd></dl></div></body></html>
