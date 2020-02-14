@@ -35,7 +35,8 @@ jobs:
       - name: Build
         run: opam exec -- make
 
-      - run: |
+      - name: Setup Opam repository
+        run: |
           mkdir -p "$HOME/.config/dune/"
           echo "${{ secrets.GITHUB_TOKEN }}" > "$HOME/.config/dune/github.token"
           git clone https://github.com/tmattio/opam-repository.git $HOME/git/opam-repository
