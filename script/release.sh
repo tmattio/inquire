@@ -16,6 +16,8 @@ elif [ "${branch}" != "master" ]; then
   exit 1
 else
   VERSION=$(sed -nE 's/^version: "(.*)"$/\1/p' inquire.opam)
-  git tag -a "v${VERSION}" -m "${VERSION}"
-  git push origin --tags
+  dune-release tag v$VERSION
+  dune-release distrib
+  dune-release publish -y
+  dune-release opam submit --no-auto-open -y
 fi
