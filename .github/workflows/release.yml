@@ -18,7 +18,7 @@ jobs:
         with:
           ocaml-version: ${{ matrix.ocaml-version }}
 
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
       - name: Pin package
         run: opam pin add inquire.dev -n .
@@ -42,13 +42,18 @@ jobs:
           git clone https://github.com/tmattio/opam-repository.git $HOME/git/opam-repository
 
       - name: Create a package distribution archive
-        run: opam exec -- dune-release distrib
+        run: opam exec -- dune-release distrib --verbosity=debug
+
+      - name: Setup Git remote
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Github Actions"
 
       - name: Publish documentation and release archive
-        run: opam exec -- dune-release publish -y
+        run: opam exec -- dune-release publish -y --verbosity=debug
 
       - name: Create an Opam package
-        run: opam exec -- dune-release opam pkg
+        run: opam exec -- dune-release opam pkg --verbosity=debug
 
       - name: Release on Opam
-        run: opam exec -- dune-release opam submit --no-auto-open -y
+        run: opam exec -- dune-release opam submit --no-auto-open -y --verbosity=debug
