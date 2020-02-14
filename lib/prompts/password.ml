@@ -2,16 +2,6 @@ open Lwt_react
 
 let ( >>= ) = Lwt.( >>= )
 
-let make_prompt ~impl:(module I : Impl.M) message =
-  let prompt_str = I.prompt_prefix ^ message ^ " " in
-  let styled_str = Style.Text_markup.apply prompt_str ~style:I.prompt_style in
-  LTerm_text.eval styled_str
-
-let make_error ~term ~impl:(module I : Impl.M) message =
-  let prompt_str = I.error_prefix ^ message in
-  let styled_str = Style.Ascii.apply prompt_str ~style:I.error_style in
-  LTerm.fprintl term styled_str
-
 class read_password ~term prompt =
   object (self)
     inherit [Zed_string.t] LTerm_read_line.engine () as super
@@ -38,12 +28,17 @@ class read_password ~term prompt =
   end
 
 let rec loop ~term ~impl:(module I : Impl.M) message =
-  let prompt = make_prompt message ~impl:(module I) in
+  let prompt =
+    Utils.make_prompt_markup message ~impl:(module I) |> LTerm_text.eval
+  in
   (new read_password prompt ~term)#run >>= fun password ->
   match Zed_string.to_utf8 password with
   | "" ->
-    make_error "You need to enter a password" ~term ~impl:(module I)
-    >>= fun () -> loop message ~term ~impl:(module I)
+    let error_str =
+      Utils.make_error_str "You need to enter a password" ~impl:(module I)
+    in
+    LTerm.fprintl term error_str >>= fun () ->
+    loop message ~term ~impl:(module I)
   | password ->
     Lwt.return password
 

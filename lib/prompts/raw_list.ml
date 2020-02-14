@@ -15,22 +15,13 @@ module Interpreter = struct
 end
 
 let make_prompt ~impl:(module I : Impl.M) ~options message =
-  let prompt_str = I.prompt_prefix ^ message ^ "\n" in
-  let styled_str = Style.Text_markup.apply prompt_str ~style:I.prompt_style in
+  let prompt = Utils.make_prompt_markup message ~impl:(module I) in
   let options_string =
     List.mapi options ~f:(fun i opt ->
         "  " ^ Int.to_string (i + 1) ^ ") " ^ opt ^ "\n")
     |> String.concat
   in
-  let prompt =
-    List.concat [ styled_str; [ S "\n"; S options_string; S "  Answer: " ] ]
-  in
-  eval prompt
-
-let make_error ~term ~impl:(module I : Impl.M) message =
-  let prompt_str = I.error_prefix ^ message in
-  let styled_str = Style.Ascii.apply prompt_str ~style:I.error_style in
-  LTerm.fprintl term styled_str
+  List.concat [ prompt; [ S "\n"; S options_string; S "  Answer: " ] ]
 
 class read_line ~term prompt =
   object (self)
@@ -44,13 +35,16 @@ class read_line ~term prompt =
   end
 
 let rec loop ~term ~impl:(module I : Impl.M) ~options message =
-  let prompt = make_prompt message ~options ~impl:(module I) in
+  let prompt =
+    make_prompt message ~options ~impl:(module I) |> LTerm_text.eval
+  in
   let rl = new read_line prompt ~term in
   rl#run >>= fun command ->
   let command_utf8 = Zed_string.to_utf8 command in
   match Interpreter.eval command_utf8 ~options ~impl:(module I) with
   | Error e ->
-    make_error e ~term ~impl:(module I) >>= fun () ->
+    let error_str = Utils.make_error_str e ~impl:(module I) in
+    LTerm.fprintl term error_str >>= fun () ->
     loop message ~options ~term ~impl:(module I)
   | Ok v ->
     Lwt.return (List.nth_exn options v)
