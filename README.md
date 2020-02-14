@@ -116,12 +116,12 @@ Documentation for the libraries in the project can be generated with:
 
 ```bash
 make doc
-open-cli _build/default/_doc/_html/index.html
+open-cli $(make doc-path)
 ```
 
 This assumes you have a command like [open-cli](https://github.com/sindresorhus/open-cli) installed on your system.
 
-> NOTE: On macOS, you can use the system command `open`, for instance `open _build/default/_doc/_html/index.html`
+> NOTE: On macOS, you can use the system command `open`, for instance `open $(make doc-path)`
 
 ### Create new releases
 

@@ -1,4 +1,4 @@
-.PHONY: all test clean
+.PHONY: all test clean doc doc-path format watch utop release
 
 all:
 	dune build
@@ -13,7 +13,7 @@ doc:
 	dune build @doc
 
 doc-path:
-	echo _build/default/_doc/_html/index.html
+	@echo "_build/default/_doc/_html/index.html"
 
 format:
 	dune build @fmt --auto-promote
@@ -25,6 +25,4 @@ utop:
 	dune utop lib -- -implicit-bindings
 
 release:
-	./release.sh
-
-.PHONY: all clean
+	./script/release.sh
