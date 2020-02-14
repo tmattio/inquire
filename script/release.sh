@@ -16,7 +16,7 @@ elif [ "${branch}" != "master" ]; then
   exit 1
 else
   VERSION=$(sed -nE 's/^version: "(.*)"$/\1/p' inquire.opam)
-  dune-release tag v$VERSION
+  dune-release tag v$VERSION -y
   dune-release distrib
   dune-release publish -y
   dune-release opam submit --no-auto-open -y
