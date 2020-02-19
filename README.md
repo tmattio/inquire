@@ -82,7 +82,13 @@ let _ =
 
 You need Opam, you can install it by following [Opam's documentation](https://opam.ocaml.org/doc/Install.html).
 
-With Opam installed, you can build the project with:
+With Opam installed, you can install the dependencies with:
+
+```bash
+opam install --deps-only --with-test -y .
+```
+
+Then, build the project with:
 
 ```bash
 make
