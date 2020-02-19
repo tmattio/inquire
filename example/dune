@@ -1,5 +1,5 @@
 (executables
  (names confirm custom_impl minimal raw_list password input)
  (modules (:standard))
- (libraries base stdio str lwt lambda-term inquire.lib)
+ (libraries base str lwt lambda-term inquire.lib)
  (flags -open Base))

@@ -4,8 +4,11 @@ all:
 	dune build @install
 	dune build
 
+install:
+	dune install
+
 test:
-	dune runtest -f
+	dune build @test/runtest -f
 
 clean:
 	dune clean
@@ -20,7 +23,7 @@ format:
 	dune build @fmt --auto-promote
 
 watch:
-	dune build -p #{self.name} --watch
+	dune build --watch
 
 utop:
 	dune utop lib -- -implicit-bindings
