@@ -9,13 +9,13 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        ocaml-version: ['4.09.0', '4.08.1']
+        ocaml-version: ['4.10.0']
     steps:
       - uses: avsm/setup-ocaml@master
         with:
           ocaml-version: ${{ matrix.ocaml-version }}
 
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
       - name: Pin package
         run: opam pin add inquire.dev -n .
@@ -24,10 +24,13 @@ jobs:
         run: opam depext -yt inquire
 
       - name: Install dependencies
-        run: opam install -t . --deps-only
+        run: make dev
 
       - name: Build
-        run: opam exec -- make
+        run: make build
+
+      - name: Check formatting
+        run: make format
 
       - name: Run tests
-        run: opam exec -- make test
+        run: make test

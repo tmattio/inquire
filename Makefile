@@ -1,30 +1,31 @@
-
 .PHONY: all
 all:
-	dune build @install
-	dune build
-
+	opam exec -- dune build @install
 
 .PHONY: dev
 dev:
 	opam install dune-release merlin ocamlformat utop
 	opam install --deps-only --with-test --with-doc -y .
 
+.PHONY: build
+build:
+	opam exec -- dune build
+
 .PHONY: install
 install:
-	dune install
+	opam exec -- dune install
 
 .PHONY: test
 test:
-	dune build @test/runtest -f
+	opam exec -- dune build @test/runtest -f
 
 .PHONY: clean
 clean:
-	dune clean
+	opam exec -- dune clean
 
 .PHONY: doc
 doc:
-	dune build @doc
+	opam exec -- dune build @doc
 
 .PHONY: doc-path
 doc-path:
@@ -32,16 +33,16 @@ doc-path:
 
 .PHONY: format
 format:
-	dune build @fmt --auto-promote
+	opam exec -- dune build @fmt --auto-promote
 
 .PHONY: watch
 watch:
-	dune build --watch
+	opam exec -- dune build --watch
 
 .PHONY: utop
 utop:
-	dune utop lib -- -implicit-bindings
+	opam exec -- dune utop lib -- -implicit-bindings
 
 .PHONY: release
 release:
-	./script/release.sh
+	opam exec -- sh script/release.sh
