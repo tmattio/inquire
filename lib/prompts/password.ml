@@ -27,16 +27,29 @@ class read_password ~term prompt =
     initializer self#set_prompt (S.const prompt)
   end
 
-let rec loop ~term ~impl:(module I : Impl.M) message =
+let rec loop ?validate ~term ~impl:(module I : Impl.M) message =
+  let validate_input s =
+    match validate with
+    | None ->
+      Lwt.return s
+    | Some f ->
+      (match f s with
+      | Ok r ->
+        Lwt.return r
+      | Error e ->
+        LTerm.fprintls term (I.make_error e) >>= fun () ->
+        loop message ?validate ~term ~impl:(module I))
+  in
   let prompt = I.make_prompt message in
   (new read_password prompt ~term)#run >>= fun password ->
   match Zed_string.to_utf8 password with
   | "" ->
     let error_str = I.make_error "You need to enter a password" in
     LTerm.fprintls term error_str >>= fun () ->
-    loop message ~term ~impl:(module I)
+    loop message ?validate ~term ~impl:(module I)
   | password ->
-    Lwt.return password
+    validate_input password
 
-let prompt ~impl:(module I : Impl.M) message =
-  Lazy.force LTerm.stdout >>= fun term -> loop message ~term ~impl:(module I)
+let prompt ?validate ~impl:(module I : Impl.M) message =
+  Lazy.force LTerm.stdout >>= fun term ->
+  loop message ?validate ~term ~impl:(module I)

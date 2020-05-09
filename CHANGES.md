@@ -9,7 +9,7 @@
 
 - Add `select` prompt.
 - Support default values for all prompts.
-- Support validate functions for all prompts.
+- Support validate functions for `password` and `input` prompts.
 
 # 0.1.0 - 2020-02-12
 
