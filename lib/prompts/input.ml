@@ -37,7 +37,7 @@ let rec loop ?validate ?default ~term ~impl:(module I : Impl.M) message =
         Lwt.return r
       | Error e ->
         LTerm.fprintls term (I.make_error e) >>= fun () ->
-        loop message ?validate ~term ~impl:(module I))
+        loop message ?default ?validate ~term ~impl:(module I))
   in
   let prompt = make_prompt message ?default ~impl:(module I) in
   let rl = new read_line prompt ~term in
