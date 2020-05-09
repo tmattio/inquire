@@ -33,7 +33,7 @@ Inquire.confirm "Are you sure?"
 Prompt the user to chose a value from the given options.
 
 ```ocaml
-Inquire.raw_list "What's your favorite movie?" ~options:[ "Choice 1" ; "Choice 2" ]
+Inquire.raw_select "What's your favorite movie?" ~options:[ "Choice 1" ; "Choice 2" ]
 ```
 
 ### Password

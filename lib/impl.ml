@@ -1,19 +1,10 @@
 module type M = sig
-  val prompt_prefix : string
+  val make_prompt : string -> (Zed_char.t * LTerm_style.t) array
 
-  val prompt_prefix_style : Style.t
+  val make_error : string -> (Zed_char.t * LTerm_style.t) array
 
-  val prompt_style : Style.t
-
-  val error_prefix : string
-
-  val error_prefix_style : Style.t
-
-  val error_style : Style.t
-
-  val selected_prefix : string
-
-  val selected_prefix_style : Style.t
-
-  val selected_style : Style.t
+  val make_select
+    :  current:int
+    -> string list
+    -> (Zed_char.t * LTerm_style.t) array
 end

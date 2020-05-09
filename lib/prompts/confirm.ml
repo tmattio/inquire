@@ -22,19 +22,25 @@ let make_choice_str_of_default default =
   | None ->
     "(y/n)"
 
+let make_prompt ?default ~impl:(module I : Impl.M) message =
+  let default_str =
+    match default with
+    | None ->
+      ""
+    | Some v ->
+      Printf.sprintf "%s " (make_choice_str_of_default default)
+  in
+  let prompt = I.make_prompt message in
+  Array.concat [ prompt; LTerm_text.eval [ S default_str ] ]
+
 let rec loop ~term ~impl:(module I : Impl.M) ?default message =
   let handle_error () =
-    let error_str =
-      Utils.make_error_str "Please enter 'y' or 'n'." ~impl:(module I)
-    in
-    LTerm.fprintl term error_str >>= fun () ->
+    let s = I.make_error "Please enter 'y' or 'n'." in
+    LTerm.fprintls term s >>= fun () ->
     loop message ~term ~impl:(module I) ?default
   in
-  let default_str = make_choice_str_of_default default in
-  let prompt_str =
-    Utils.make_prompt_str (message ^ " " ^ default_str) ~impl:(module I)
-  in
-  LTerm.fprint term prompt_str >>= fun () ->
+  let prompt_str = make_prompt ?default ~impl:(module I) message in
+  LTerm.fprints term prompt_str >>= fun () ->
   read_char term >>= fun code ->
   match code, default with
   | LTerm_key.Char code, _ ->

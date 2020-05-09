@@ -14,13 +14,7 @@
  (synopsis "An OCaml library to create beautiful interactive CLIs")
  (description "An OCaml library to create beautiful interactive CLIs")
  (depends
-  (ocaml (>= 4.06.0))
-  (dune (and :build (> 1.5)))
-  (dune-release :dev)
-  (merlin :dev)
-  (odoc :dev)
-  (utop :dev)
-  (alcotest :with-test)
-  base
+  (ocaml (>= 4.08.0))
+  (dune (>= 2.0))
   lwt
   lambda-term))

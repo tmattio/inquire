@@ -1,29 +1,19 @@
-let make_prompt_markup ~impl:(module I : Impl.M) message =
-  let prompt_str = message ^ " " in
-  let prompt_prefix =
-    Style.Text_markup.apply I.prompt_prefix ~style:I.prompt_prefix_style
+let find_list_index ~f l =
+  let rec aux i = function
+    | [] ->
+      None
+    | el :: _ when f el ->
+      Some i
+    | _ :: rest ->
+      aux (i + 1) rest
   in
-  let prompt = Style.Text_markup.apply prompt_str ~style:I.prompt_style in
-  List.concat [ prompt_prefix; prompt ]
+  aux 0 l
 
-let make_error_markup ~impl:(module I : Impl.M) message =
-  let error_prefix =
-    Style.Text_markup.apply I.error_prefix ~style:I.error_prefix_style
-  in
-  let error = Style.Text_markup.apply message ~style:I.error_style in
-  List.concat [ error_prefix; error ]
+let index_of_default ?default l =
+  Option.bind default (fun default ->
+      find_list_index ~f:(String.equal default) l)
+  |> Option.value ~default:0
 
-let make_prompt_str ~impl:(module I : Impl.M) message =
-  let prompt_str = message ^ " " in
-  let prompt_prefix =
-    Style.Ascii.apply I.prompt_prefix ~style:I.prompt_prefix_style
-  in
-  let prompt = Style.Ascii.apply prompt_str ~style:I.prompt_style in
-  prompt_prefix ^ prompt
-
-let make_error_str ~impl:(module I : Impl.M) message =
-  let error_prefix =
-    Style.Ascii.apply I.error_prefix ~style:I.error_prefix_style
-  in
-  let error = Style.Ascii.apply message ~style:I.error_style in
-  error_prefix ^ error
+let index_of_default_opt ?default l =
+  Option.bind default (fun default ->
+      find_list_index ~f:(String.equal default) l)

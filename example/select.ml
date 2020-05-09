@@ -10,7 +10,10 @@ let movies =
 
 let () =
   let result =
-    Inquire.raw_list "What's your favorite movie?" ~options:movies
+    Inquire.select
+      "What's your favorite movie?"
+      ~options:movies
+      ~default:(List.nth movies 2)
     >>= fun movie -> Lwt_io.printlf "Indeed, %S is a great movie!" movie
   in
   Lwt_main.run result

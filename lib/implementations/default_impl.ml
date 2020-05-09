@@ -1,21 +1,44 @@
-module M = struct
-  let prompt_prefix = "? "
+module M : Impl.M = struct
+  open LTerm_text
+  open LTerm_style
 
-  let prompt_prefix_style = Style.make [ Style.color Green ]
+  let make_prompt message =
+    eval
+      [ B_fg green
+      ; B_bold true
+      ; S "? "
+      ; B_fg white
+      ; S (Printf.sprintf "%s " message)
+      ; E_bold
+      ; E_fg
+      ]
 
-  let prompt_style = Style.make [ Style.bold; Style.color White ]
+  let make_error message =
+    eval
+      [ B_fg red
+      ; B_bold true
+      ; S "X "
+      ; E_bold
+      ; S (Printf.sprintf "%s" message)
+      ; E_fg
+      ]
 
-  let error_prefix = ">> "
-
-  let error_prefix_style = Style.make [ Style.bold; Style.color Red ]
-
-  let error_style = Style.make [ Style.bold; Style.color Red ]
-
-  let selected_prefix = "> "
-
-  let selected_prefix_style = Style.make [ Style.bold; Style.color Blue ]
-
-  let selected_style = Style.make [ Style.bold; Style.color Blue ]
+  let make_select ~current options =
+    List.mapi options ~f:(fun index option ->
+        if current = index then
+          [ B_fg green
+          ; B_bold true
+          ; S "> "
+          ; E_bold
+          ; E_fg
+          ; B_fg white
+          ; S (Printf.sprintf "%s\n" option)
+          ; E_fg
+          ]
+        else
+          [ S "  "; S (Printf.sprintf "%s\n" option) ])
+    |> List.concat
+    |> eval
 end
 
 include Factory.Make (M)

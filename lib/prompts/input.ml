@@ -19,22 +19,27 @@ class read_line ~term prompt =
     initializer self#set_prompt (S.const prompt)
   end
 
-let rec loop ~term ~impl:(module I : Impl.M) message =
-  let prompt =
-    Utils.make_prompt_markup message ~impl:(module I) |> LTerm_text.eval
+let make_prompt ?default ~impl:(module I : Impl.M) message =
+  let default_str =
+    match default with None -> "" | Some v -> Printf.sprintf "[%s] " v
   in
+  let prompt = I.make_prompt message in
+  Array.concat [ prompt; LTerm_text.eval [ S default_str ] ]
+
+let rec loop ?default ~term ~impl:(module I : Impl.M) message =
+  let prompt = make_prompt message ?default ~impl:(module I) in
   let rl = new read_line prompt ~term in
   rl#run >>= fun line ->
-  match Zed_string.to_utf8 line with
-  | "" ->
-    let error_str =
-      Utils.make_error_str "You need to enter a value" ~impl:(module I)
-    in
-    LTerm.fprintl term error_str >>= fun () ->
+  match Zed_string.to_utf8 line, default with
+  | "", Some default ->
+    Lwt.return default
+  | "", None ->
+    let error_str = I.make_error "You need to enter a value" in
+    LTerm.fprintls term error_str >>= fun () ->
     loop message ~term ~impl:(module I)
-  | line ->
+  | line, _ ->
     Lwt.return line
 
-let prompt ~impl:(module I : Impl.M) message =
-  LTerm_inputrc.load () >>= fun () ->
-  Lazy.force LTerm.stdout >>= fun term -> loop message ~term ~impl:(module I)
+let prompt ?default ~impl:(module I : Impl.M) message =
+  Lazy.force LTerm.stdout >>= fun term ->
+  loop message ?default ~term ~impl:(module I)

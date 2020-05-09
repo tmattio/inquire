@@ -28,20 +28,15 @@ class read_password ~term prompt =
   end
 
 let rec loop ~term ~impl:(module I : Impl.M) message =
-  let prompt =
-    Utils.make_prompt_markup message ~impl:(module I) |> LTerm_text.eval
-  in
+  let prompt = I.make_prompt message in
   (new read_password prompt ~term)#run >>= fun password ->
   match Zed_string.to_utf8 password with
   | "" ->
-    let error_str =
-      Utils.make_error_str "You need to enter a password" ~impl:(module I)
-    in
-    LTerm.fprintl term error_str >>= fun () ->
+    let error_str = I.make_error "You need to enter a password" in
+    LTerm.fprintls term error_str >>= fun () ->
     loop message ~term ~impl:(module I)
   | password ->
     Lwt.return password
 
 let prompt ~impl:(module I : Impl.M) message =
-  LTerm_inputrc.load () >>= fun () ->
   Lazy.force LTerm.stdout >>= fun term -> loop message ~term ~impl:(module I)
