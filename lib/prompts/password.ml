@@ -35,7 +35,7 @@ let rec loop ~validate ~term ~impl:(module I : Impl.M) message =
       Lwt.return r
     | Error e ->
       LTerm.fprintls term (I.make_error e) >>= fun () ->
-      loop message ?validate ~term ~impl:(module I)
+      loop message ~validate ~term ~impl:(module I)
   in
   let prompt = I.make_prompt message in
   (new read_password prompt ~term)#run >>= fun password ->
@@ -43,7 +43,7 @@ let rec loop ~validate ~term ~impl:(module I : Impl.M) message =
   | "" ->
     let error_str = I.make_error "You need to enter a password" in
     LTerm.fprintls term error_str >>= fun () ->
-    loop message ?validate ~term ~impl:(module I)
+    loop message ~validate ~term ~impl:(module I)
   | password ->
     validate_input password
 
