@@ -26,18 +26,20 @@ let make_prompt ?default ~impl:(module I : Impl.M) message =
   let prompt = I.make_prompt message in
   Array.concat [ prompt; LTerm_text.eval [ S default_str ] ]
 
-let rec loop ?validate ?default ~term ~impl:(module I : Impl.M) message =
+let rec loop
+    ~validate
+    ?default
+    ~term
+    ~impl:(module I : Impl.M)
+    message
+  =
   let validate_input s =
-    match validate with
-    | None ->
-      Lwt.return s
-    | Some f ->
-      (match f s with
-      | Ok r ->
-        Lwt.return r
-      | Error e ->
-        LTerm.fprintls term (I.make_error e) >>= fun () ->
-        loop message ?default ?validate ~term ~impl:(module I))
+    validate s >>= function
+    | Ok r ->
+      Lwt.return r
+    | Error e ->
+      LTerm.fprintls term (I.make_error e) >>= fun () ->
+      loop message ~validate ~term ~impl:(module I)
   in
   let prompt = make_prompt message ?default ~impl:(module I) in
   let rl = new read_line prompt ~term in
@@ -48,10 +50,15 @@ let rec loop ?validate ?default ~term ~impl:(module I : Impl.M) message =
   | "", None ->
     let error_str = I.make_error "You need to enter a value" in
     LTerm.fprintls term error_str >>= fun () ->
-    loop message ?validate ~term ~impl:(module I)
+    loop message ~validate ~term ~impl:(module I)
   | line, _ ->
     validate_input line
 
-let prompt ?validate ?default ~impl:(module I : Impl.M) message =
+let prompt
+    ?(validate = fun v -> Lwt_result.return v)
+    ?default
+    ~impl:(module I : Impl.M)
+    message
+  =
   Lazy.force LTerm.stdout >>= fun term ->
-  loop message ?validate ?default ~term ~impl:(module I)
+  loop message ~validate ?default ~term ~impl:(module I)

@@ -2,9 +2,9 @@ let ( >>= ) = Lwt.( >>= )
 
 let validate_password v =
   if String.length v >= 6 then
-    Ok v
+    Lwt.return (Ok v)
   else
-    Error "The password must be 6 characters or more."
+    Lwt.return (Error "The password must be 6 characters or more.")
 
 let () =
   let result =

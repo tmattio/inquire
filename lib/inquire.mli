@@ -24,9 +24,9 @@ val confirm : ?default:bool -> String.t -> bool Lwt.t
     ]} *)
 
 val password
-  :  ?validate:(string -> (string, string) result)
-  -> String.t
-  -> String.t Lwt.t
+  :  ?validate:(string -> (string, string) Lwt_result.t)
+  -> string
+  -> string Lwt.t
 (** Prompt the user to enter a password that will be hidden with stars ('*').
 
     The password can take any value, except the empty string.
@@ -42,10 +42,10 @@ val password
     ]} *)
 
 val input
-  :  ?validate:(string -> (string, string) result)
+  :  ?validate:(string -> (string, string) Lwt_result.t)
   -> ?default:string
-  -> String.t
-  -> String.t Lwt.t
+  -> string
+  -> string Lwt.t
 (** Prompt the user to input a string.
 
     The string can take any value, except the empty string.
