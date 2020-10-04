@@ -26,13 +26,7 @@ let make_prompt ?default ~impl:(module I : Impl.M) message =
   let prompt = I.make_prompt message in
   Array.concat [ prompt; LTerm_text.eval [ S default_str ] ]
 
-let rec loop
-    ~validate
-    ?default
-    ~term
-    ~impl:(module I : Impl.M)
-    message
-  =
+let rec loop ~validate ?default ~term ~impl:(module I : Impl.M) message =
   let validate_input s =
     validate s >>= function
     | Ok r ->

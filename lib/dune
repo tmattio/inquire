@@ -1,7 +1,7 @@
 (library
  (name inquire)
  (public_name inquire)
- (libraries lwt lambda-term)
+ (libraries lwt inquire.lambda-term)
  (flags -open StdLabels))
 
 (include_subdirs unqualified)
