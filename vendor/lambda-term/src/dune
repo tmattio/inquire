@@ -1,8 +1,8 @@
 (library
  (name lambda_term)
- (public_name lambda-term)
+ (public_name inquire.lambda-term)
  (wrapped false)
- (libraries lwt lwt.unix lwt_react zed lwt_log mew_vi uucp uunf)
+ (libraries lwt lwt.unix lwt_react inquire.zed lwt_log mew_vi uucp uunf)
  (flags
   (:standard -safe-string))
  (synopsis "Cross-platform library for terminal manipulation")
