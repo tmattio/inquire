@@ -112,13 +112,13 @@ make
 After building the project, you can run the example binaries with:
 
 ```bash
-dune exec examples/<example>.exe
+dune exec example/<example>.exe
 ```
 
 For instance, to run the `confirm.ml` example, you can type:
 
 ```bash
-dune exec examples/confirm.exe
+dune exec example/confirm.exe
 ```
 
 ### Running Tests
@@ -154,7 +154,7 @@ The following snippet describes Inquire's repository structure.
 
 ```text
 .
-├── examples/
+├── example/
 |   Source for inquire's examples. This links to the library defined in `lib/`.
 │
 ├── lib/
