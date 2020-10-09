@@ -121,14 +121,6 @@ For instance, to run the `confirm.ml` example, you can type:
 dune exec examples/confirm.exe
 ```
 
-### Running Tests
-
-You can test compiled executable with:
-
-```bash
-make test
-```
-
 ### Building documentation
 
 Documentation for the libraries in the project can be generated with:
@@ -159,9 +151,6 @@ The following snippet describes Inquire's repository structure.
 │
 ├── lib/
 |   Source for Inquire's library. Contains Inquire's core functionnalities.
-│
-├── test/
-|   Unit tests and integration tests for Inquire.
 │
 ├── dune-project
 |   Dune file used to mark the root of the project and define project-wide parameters.
