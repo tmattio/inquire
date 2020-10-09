@@ -15,10 +15,6 @@ build:
 install:
 	opam exec -- dune install
 
-.PHONY: test
-test:
-	opam exec -- dune build @test/runtest -f
-
 .PHONY: clean
 clean:
 	opam exec -- dune clean
