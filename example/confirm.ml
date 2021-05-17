@@ -1,8 +1,3 @@
-let ( >>= ) = Lwt.( >>= )
-
 let () =
-  let result =
-    Inquire.confirm "Are you sure?" ~default:true >>= fun choice ->
-    if choice then Lwt_io.printl "Yes!" else Lwt_io.printl "No!"
-  in
-  Lwt_main.run result
+  let choice = Inquire.confirm "Are you sure?" in
+  if choice then print_endline "Yes!" else print_endline "No!"

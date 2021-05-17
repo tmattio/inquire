@@ -1,15 +1,15 @@
-(lang dune 2.0)
+(lang dune 2.7)
 
 (name inquire)
 
-(version 0.2.1)
+(documentation "https://tmattio.github.io/inquire/")
 
 (source
  (github tmattio/inquire))
 
-(documentation "https://tmattio.github.io/inquire")
-
 (license MIT)
+
+(cram enable)
 
 (authors "Thibaut Mattio")
 
@@ -19,27 +19,12 @@
 
 (package
  (name inquire)
- (synopsis "An OCaml library to create beautiful interactive CLIs")
- (description "An OCaml library to create beautiful interactive CLIs")
+ (synopsis
+  "\240\159\142\168 Create beautiful interactive command line interface in OCaml")
+ (description
+  "\240\159\142\168 Create beautiful interactive command line interface in OCaml.")
  (depends
   (ocaml
    (>= 4.08.0))
-  (dune
-   (>= 2.0))
-  lwt
-  ; Vendored zed
-  base-bytes
-  uucd
-  uutf
-  uuseg
-  react
-  ; Vendored lambda-term
-  lwt_log
-  react
-  lwt_react
-  (mew_vi
-   (and
-    (>= 0.5.0)
-    (< 0.6.0)))
-  uucp
-  uunf))
+  dune
+  (odoc :with-doc)))

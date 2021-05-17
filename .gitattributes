@@ -1,4 +1,4 @@
-# Tell github that .re and .rei files are Reason
+# Tell github that .ml and .mli files are OCaml
 *.ml linguist-language=OCaml
 *.mli linguist-language=OCaml
 

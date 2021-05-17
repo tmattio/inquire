@@ -1,51 +1,183 @@
 (** Inquire is a high-level library to create interactive command line
     interfaces. *)
 
-(** Create a new implementation of Inquire to customize the prompts. *)
-module Make = Factory.Make
+module Style : sig
+  (** Module to customize Inquire prompts. *)
 
-(** Minimal implementation of Inquire with no color and no prompt prefixes. *)
-module Minimal = Minimal_impl
+  (** Available colors. *)
+  type color =
+    | Black
+    | Red
+    | Green
+    | Yellow
+    | Blue
+    | Magenta
+    | Cyan
+    | White
+    | Bright_black
+    | Bright_red
+    | Bright_green
+    | Bright_yellow
+    | Bright_blue
+    | Bright_magenta
+    | Bright_cyan
+    | Bright_white
+    | Default
 
-(** Default implementation of Inquire with hopefully nice colors and prefixes. *)
-module Default = Default_impl
+  (** Various styles for the text. [Blink] and [Hidden] may not work on every
+      terminal. *)
+  type style =
+    | Reset
+    | Bold
+    | Underlined
+    | Blink
+    | Inverse
+    | Hidden
+    | Foreground of color
+    | Background of color
 
-val confirm : ?default:bool -> String.t -> bool Lwt.t
+  val black : style
+  (** Shortcut for [Foreground Black] *)
+
+  val red : style
+  (** Shortcut for [Foreground Red] *)
+
+  val green : style
+  (** Shortcut for [Foreground Green] *)
+
+  val yellow : style
+  (** Shortcut for [Foreground Yellow] *)
+
+  val blue : style
+  (** Shortcut for [Foreground Blue] *)
+
+  val magenta : style
+  (** Shortcut for [Foreground Magenta] *)
+
+  val cyan : style
+  (** Shortcut for [Foreground Cyan] *)
+
+  val white : style
+  (** Shortcut for [Foreground White] *)
+
+  val bg_black : style
+  (** Shortcut for [Background Black] *)
+
+  val bg_red : style
+  (** Shortcut for [Background Red] *)
+
+  val bg_green : style
+  (** Shortcut for [Background Green] *)
+
+  val bg_yellow : style
+  (** Shortcut for [Background Yellow] *)
+
+  val bg_blue : style
+  (** Shortcut for [Background Blue] *)
+
+  val bg_magenta : style
+  (** Shortcut for [Background Magenta] *)
+
+  val bg_cyan : style
+  (** Shortcut for [Background Cyan] *)
+
+  val bg_white : style
+  (** Shortcut for [Background White] *)
+
+  val bg_default : style
+  (** Shortcut for [Background Default] *)
+
+  val bold : style
+  (** Shortcut for [Bold] *)
+
+  val underlined : style
+  (** Shortcut for [Underlined] *)
+
+  val blink : style
+  (** Shortcut for [Blink] *)
+
+  val inverse : style
+  (** Shortcut for [Inverse] *)
+
+  val hidden : style
+  (** Shortcut for [Hidden] *)
+
+  type t
+
+  val default : t
+  (** The default style used by Inquire prompts if none is provided. *)
+
+  val make
+    :  ?qmark_icon:string
+    -> ?qmark_format:Ansi.style list
+    -> ?message_format:Ansi.style list
+    -> ?error_icon:string
+    -> ?error_format:Ansi.style list
+    -> ?default_format:Ansi.style list
+    -> ?option_icon_marked:string
+    -> ?option_icon_unmarked:string
+    -> ?select_icon:string
+    -> unit
+    -> t
+  (** Create a custom style.
+
+      - [qmark_icon] is the icon used for the question mark that prefixes the
+        prompt.
+      - [qmark_format] is the format of the question mark.
+      - [message_format] is the format of the prompt message.
+      - [error_icon] is the icon used for error messages.
+      - [error_format] is the format used for the error messages.
+      - [default_format] is the format used for the default tooltip of the
+        prompt, if present.
+      - [option_icon_marked] is the icon used to mark selected options in
+        multi-selection prompts.
+      - [option_icon_unmarked] is the icon used to mark unselected options in
+        multi-selection prompts.
+      - [select_icon] is the icon used to mark the selected option in
+        single-selection prompts. *)
+end
+
+val confirm
+  :  ?default:bool
+  -> ?auto_enter:bool
+  -> ?style:Style.t
+  -> string
+  -> bool
 (** Prompt the user to answer the given message with "y" or "n".
 
     {4 Examples}
 
     {[
-      let result =
-        Inquire.confirm "Are you sure?" ~default:true >>= fun choice ->
-        if choice then Lwt_io.printl "Yes!" else Lwt_io.printl "No!"
-      in
-      Lwt_main.run result
+      Inquire.confirm "Are you sure?" ~default:true |> fun choice ->
+      if choice then print_endline "Yes!" else print_endline "No!"
     ]} *)
 
 val password
-  :  ?validate:(string -> (string, string) Lwt_result.t)
+  :  ?validate:(string -> (string, string) result)
+  -> ?default:string
+  -> ?style:Style.t
   -> string
-  -> string Lwt.t
-(** Prompt the user to enter a password that will be hidden with stars ('*').
+  -> string
+(** Prompt the user to enter a password that will be hidden.
 
     The password can take any value, except the empty string.
 
+    On Unix, this works by setting the echo mode of the terminal to off.
+
+    On Windows, we print "\x1b[8m" before prompting the password and "\x1b[0m"
+    after.
+
     {4 Examples}
 
-    {[
-      let result =
-        Inquire.password "Enter your password:" >>= fun password ->
-        Lwt_io.printlf "Your new password is: %S" password
-      in
-      Lwt_main.run result
-    ]} *)
+    {[ Inquire.password "Enter your password:" |> fun password -> print_endline
+    "Your new password is: %S" password ]} *)
 
 val input
-  :  ?validate:(string -> (string, string) Lwt_result.t)
+  :  ?validate:(string -> (string, string) result)
   -> ?default:string
+  -> ?style:Style.t
   -> string
-  -> string Lwt.t
+  -> string
 (** Prompt the user to input a string.
 
     The string can take any value, except the empty string.
@@ -53,22 +185,14 @@ val input
     {4 Examples}
 
     {[
-      let result =
-        Inquire.input "Enter a value:" >>= fun value ->
-        Lwt_io.printlf "You entered: %S" value
-      in
-      Lwt_main.run result
+      Inquire.input "Enter a value:" |> fun value ->
+      print_endline "You entered: %S" value
     ]} *)
 
-val raw_select
-  :  ?default:string
-  -> options:string list
-  -> String.t
-  -> String.t Lwt.t
-(** Prompt the user to chose a value from the given options.
-
-    The options will be listed with an index prefixed and the users will have to
-    enter the index of their choice.
+val raw_select : ?default:string -> options:string list -> string -> string
+(** Prompt the user to chose a value from the given options. The options will be
+    listed with an index prefixed and the users will have to enter the index of
+    their choice.
 
     {4 Examples}
 
@@ -81,22 +205,13 @@ val raw_select
         ; "Star Wars: The Force Awakens"
         ]
       in
-      let result =
-        Inquire.raw_select "What's your favorite movie?" ~options:movies
-        >>= fun movie -> Lwt_io.printlf "Indeed, %S is a great movie!" movie
-      in
-      Lwt_main.run result
+      Inquire.raw_select "What's your favorite movie?" ~options:movies
+      |> fun movie -> print_endline "Indeed, %S is a great movie!" movie
     ]} *)
 
-val select
-  :  ?default:string
-  -> options:string list
-  -> String.t
-  -> String.t Lwt.t
-(** Prompt the user to chose a value from the given options.
-
-    The prompt is interactive and users can select their choice with directional
-    keys.
+val select : ?default:string -> options:string list -> string -> string
+(** Prompt the user to chose a value from the given options. The prompt is
+    interactive and users can select their choice with directional keys.
 
     {4 Examples}
 
@@ -109,9 +224,6 @@ val select
         ; "Star Wars: The Force Awakens"
         ]
       in
-      let result =
-        Inquire.select "What's your favorite movie?" ~options:movies
-        >>= fun movie -> Lwt_io.printlf "Indeed, %S is a great movie!" movie
-      in
-      Lwt_main.run result
+      Inquire.select "What's your favorite movie?" ~options:movies
+      |> fun movie -> print_endline "Indeed, %S is a great movie!" movie
     ]} *)

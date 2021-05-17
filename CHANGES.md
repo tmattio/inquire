@@ -1,3 +1,15 @@
+# 0.3.0 - 2021-05-17
+
+## Added
+
+- Improved `confirm` prompt to handle escape sequences
+- Improved `confirm` prompt to display selected answer
+
+## Changed
+
+- Stripped out `lambda-term` dependency
+- Removed `lwt` integration
+
 # 0.2.1 - 2020-10-04
 
 ## Changed 
