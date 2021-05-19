@@ -2,8 +2,9 @@
 
 ## Added
 
-- Improved `confirm` prompt to handle escape sequences
-- Improved `confirm` prompt to display selected answer
+- Improved all prompts prompt to handle escape sequences (e.g. "Ctrl-L" will clear the screen while reading from answer).
+- Improved `select` to allow selection using indexes.
+- Improved prompts to clear defaults and other tooltip on a valid answer and print the answer after the prompt.
 
 ## Changed
 
