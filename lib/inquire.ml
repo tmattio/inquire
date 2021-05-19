@@ -11,3 +11,5 @@ let password = Prompt_password.prompt
 let raw_select = Prompt_raw_select.prompt
 
 let select = Prompt_select.prompt
+
+let set_exit_on_user_interrupt v = Utils.exit_on_user_interrupt := v

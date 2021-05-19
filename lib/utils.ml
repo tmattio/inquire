@@ -1,4 +1,14 @@
+let exit_on_user_interrupt = ref true
+
 let exit i = raise (Exn.Exit i)
+
+let user_interrupt () =
+  if !exit_on_user_interrupt then (
+    prerr_string "\nCancelled by user\n";
+    flush stderr;
+    exit 130)
+  else
+    raise Exn.Interrupted_by_user
 
 let print_prompt ?default ?(style = Style.default) message =
   let () =

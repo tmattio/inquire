@@ -8,9 +8,6 @@ let movies =
 
 let () =
   let movie =
-    Inquire.raw_select
-      "What's your favorite movie?"
-      ~options:movies
-      ~default:2
+    Inquire.raw_select "What's your favorite movie?" ~options:movies ~default:2
   in
   Printf.printf "Indeed, %S is a great movie!" movie

@@ -35,10 +35,11 @@ let prompt_auto_enter ?default print_prompt =
       aux ()
     | 3, _ | 4, _ ->
       (* Handle ^C and ^D *)
-      print_endline "\n\nCancelled by user\n";
+      print_string "\n";
+      flush stdout;
       (* Exit with an exception so we can catch it and revert the changes on
          stdin. *)
-      Utils.exit 130
+      Utils.user_interrupt ()
     | _ ->
       aux ()
   in

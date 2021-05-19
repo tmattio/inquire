@@ -242,3 +242,11 @@ val select
       Inquire.select "What's your favorite movie?" ~options:movies
       |> fun movie -> print_endline "Indeed, %S is a great movie!" movie
     ]} *)
+
+val set_exit_on_user_interrupt : bool -> unit
+(** Configure the behavior on user interruptions during a prompt.
+
+    If [exit_on_user_interrupt] is [true], the program will exit with status
+    code [130]. If it is [false], an [Interrupted_by_user] exception is raised.
+
+    The default behavior is to exit on user interruptions. *)

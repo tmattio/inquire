@@ -59,10 +59,11 @@ let prompt ?default ?style ~options message =
       aux ()
     | 3, _ | 4, _ ->
       (* Handle ^C and ^D *)
-      print_endline "\n\nCancelled by user\n";
+      print_string "\n";
+      flush stdout;
       (* Exit with an exception so we can catch it and revert the changes on
          stdin. *)
-      raise Exn.Interrupted_by_user
+      Utils.user_interrupt ()
     | 127, _ ->
       (* DEL *)
       aux ()

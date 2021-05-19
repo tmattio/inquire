@@ -42,8 +42,7 @@ let prompt ?validate ?default ?style message =
         let input = Input_buffer.get buf in
         (match validate input with
         | Ok output ->
-          Utils.erase_n_chars
-            (3 + String.length default_str);
+          Utils.erase_n_chars (3 + String.length default_str);
           print_endline default_str;
           flush stdout;
           output
@@ -79,10 +78,11 @@ let prompt ?validate ?default ?style message =
       aux ()
     | 3, _ | 4, _ ->
       (* Handle ^C and ^D *)
-      print_endline "\n\nCancelled by user\n";
+      print_string "\n";
+      flush stdout;
       (* Exit with an exception so we can catch it and revert the changes on
          stdin. *)
-      raise Exn.Interrupted_by_user
+      Utils.user_interrupt ()
     | 127, _ ->
       (* DEL *)
       Input_buffer.rm_last_char buf;
