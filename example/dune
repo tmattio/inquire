@@ -1,3 +1,3 @@
 (executables
- (names confirm confirm_cli input input_cli password password_cli)
+ (names confirm confirm_cli input input_cli password password_cli raw_select)
  (libraries cmdliner inquire))

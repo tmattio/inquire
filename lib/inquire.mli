@@ -191,10 +191,18 @@ val input
       print_endline "You entered: %S" value
     ]} *)
 
-val raw_select : ?default:string -> options:string list -> string -> string
+val raw_select
+  :  ?default:int
+  -> ?style:Style.t
+  -> options:string list
+  -> string
+  -> string
 (** Prompt the user to chose a value from the given options. The options will be
     listed with an index prefixed and the users will have to enter the index of
     their choice.
+
+    Note that [raw_select] does not support more than 9 options. If you need
+    more options, please use [select] instead.
 
     {4 Examples}
 
@@ -211,7 +219,12 @@ val raw_select : ?default:string -> options:string list -> string -> string
       |> fun movie -> print_endline "Indeed, %S is a great movie!" movie
     ]} *)
 
-val select : ?default:string -> options:string list -> string -> string
+val select
+  :  ?default:int
+  -> ?style:Style.t
+  -> options:string list
+  -> string
+  -> string
 (** Prompt the user to chose a value from the given options. The prompt is
     interactive and users can select their choice with directional keys.
 

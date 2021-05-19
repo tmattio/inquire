@@ -52,6 +52,13 @@ Prompt the user to input a string.
 Inquire.input "Enter a value:"
 ```
 
+## Limitations
+
+Inquire is dead simple. The prompt implementations are ~100 line of code each and manage the terminal control flow themselves. 
+This simplicity comes at a price though:
+
+- No support for UTF8. This would in principle be relatively easy to implement with a buffer that accumulates the input bytes until it matches an UTF8 value, up to a certain number of bytes. A PR for this would be more than welcome.
+
 ## Contributing
 
 Take a look at our [Contributing Guide](CONTRIBUTING.md).

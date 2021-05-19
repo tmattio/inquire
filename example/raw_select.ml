@@ -11,6 +11,6 @@ let () =
     Inquire.raw_select
       "What's your favorite movie?"
       ~options:movies
-      ~default:(List.nth movies 2)
+      ~default:2
   in
   Printf.printf "Indeed, %S is a great movie!" movie
