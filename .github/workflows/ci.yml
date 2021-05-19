@@ -43,6 +43,9 @@ jobs:
       - name: Install opam packages
         run: opam install . --with-test
 
+      - name: Install examples opam packages
+        run: opam install cmdliner
+
       - name: Check formatting
         run: make fmt
         if: ${{ matrix.os == 'ubuntu-latest' && always() }}
