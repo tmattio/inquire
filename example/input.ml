@@ -1,8 +1,11 @@
-let ( >>= ) = Lwt.( >>= )
-
 let () =
-  let result =
-    Inquire.input "Enter a value:" ~default:"default" >>= fun value ->
-    Lwt_io.printlf "You entered: %S" value
+  let validate = function
+    | "test" ->
+      Error "Not \"test\", enter something else."
+    | x ->
+      Ok x
   in
-  Lwt_main.run result
+  let value =
+    Inquire.input "Enter a value, not test:" ~validate ~default:"default"
+  in
+  Printf.printf "You entered: %S\n" value

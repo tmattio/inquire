@@ -1,44 +1,55 @@
 .PHONY: all
 all:
-	opam exec -- dune build @install
+	opam exec -- dune build --root . @install
 
-.PHONY: dev
-dev:
-	opam install dune-release merlin ocamlformat utop
+.PHONY: deps
+deps: ## Install development dependencies
+	opam install -y dune-release merlin ocamlformat utop ocaml-lsp-server
 	opam install --deps-only --with-test --with-doc -y .
 
+.PHONY: create_switch
+create_switch:
+	opam switch create . --no-install
+
+.PHONY: switch
+switch: create_switch deps ## Create an opam switch and install development dependencies
+
+.PHONY: lock
+lock: ## Generate a lock file
+	opam lock -y .
+
 .PHONY: build
-build:
-	opam exec -- dune build
+build: ## Build the project, including non installable libraries and executables
+	opam exec -- dune build --root .
 
 .PHONY: install
-install:
-	opam exec -- dune install
+install: all ## Install the packages on the system
+	opam exec -- dune install --root .
+
+.PHONY: start
+start: all ## Run the produced executable
+	opam exec -- dune exec --root . bin/main.exe $(ARGS)
+
+.PHONY: test
+test: ## Run the unit tests
+	opam exec -- dune build --root . @test/runtest -f
 
 .PHONY: clean
-clean:
-	opam exec -- dune clean
+clean: ## Clean build artifacts and other generated files
+	opam exec -- dune clean --root .
 
 .PHONY: doc
-doc:
-	opam exec -- dune build @doc
+doc: ## Generate odoc documentation
+	opam exec -- dune build --root . @doc
 
-.PHONY: doc-path
-doc-path:
-	@echo "_build/default/_doc/_html/index.html"
-
-.PHONY: format
-format:
-	opam exec -- dune build @fmt --auto-promote
+.PHONY: fmt
+fmt: ## Format the codebase with ocamlformat
+	opam exec -- dune build --root . --auto-promote @fmt
 
 .PHONY: watch
-watch:
-	opam exec -- dune build --watch
+watch: ## Watch for the filesystem and rebuild on every change
+	opam exec -- dune build --root . --watch
 
 .PHONY: utop
-utop:
-	opam exec -- dune utop lib -- -implicit-bindings
-
-.PHONY: release
-release:
-	opam exec -- sh script/release.sh
+utop: ## Run a REPL and link with the project's libraries
+	opam exec -- dune utop --root . lib -- -implicit-bindings

@@ -1,3 +1,16 @@
+# 0.3.0 - 2021-05-17
+
+## Added
+
+- Improved all prompts prompt to handle escape sequences (e.g. "Ctrl-L" will clear the screen while reading from answer).
+- Improved `select` to allow selection using indexes.
+- Improved prompts to clear defaults and other tooltip on a valid answer and print the answer after the prompt.
+
+## Changed
+
+- Stripped out `lambda-term` dependency
+- Removed `lwt` integration
+
 # 0.2.1 - 2020-10-04
 
 ## Changed 

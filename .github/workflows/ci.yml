@@ -1,60 +1,55 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  build:
-    name: Build and test
-
-    runs-on: ${{ matrix.os }}
+  build-and-test:
+    name: CI
 
     strategy:
       fail-fast: false
+
       matrix:
         os:
           - macos-latest
           - ubuntu-latest
-        ocaml-version:
-          - 4.10.1
+          - windows-latest
+
+        ocaml-compiler:
+          - 4.12.x
+
+    runs-on: ${{ matrix.os }}
 
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Retrieve opam cache
-        uses: actions/cache@v2
-        if: runner.os != 'Windows'
-        id: cache-opam
+      - name: Use OCaml ${{ matrix.ocaml-compiler }}
+        uses: avsm/setup-ocaml@v2
         with:
-          path: ~/.opam
-          key: v1-${{ runner.os }}-opam-${{ matrix.ocaml-version }}-${{ hashFiles('inquire.opam.locked') }}
-          restore-keys: |
-            v1-${{ runner.os }}-opam-${{ matrix.ocaml-version }}-
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
+          dune-cache: ${{ matrix.os != 'macos-latest' }}
+          opam-depext-flags: --with-test
 
-      - name: Use OCaml ${{ matrix.ocaml-version }}
-        uses: avsm/setup-ocaml@v1
-        with:
-          ocaml-version: ${{ matrix.ocaml-version }}
+      - name: Install ocamlformat
+        run: opam install ocamlformat.0.18.0
+        if: ${{ matrix.os == 'ubuntu-latest' }}
 
-      - name: Pin package
-        run: opam pin add inquire.dev . --no-action
+      - name: Install opam packages
+        run: opam install . --with-test
 
-      - name: Query and install external dependencies
-        run: opam depext inquire --yes --with-doc --with-test
-
-      - name: Install dependencies
-        if: steps.cache-opam.outputs.cache-hit != 'true'
-        run: |
-          opam install . --deps-only --with-doc --with-test --locked --unlock-base
-          opam install ocamlformat --skip-updates
-
-      - name: Upgrade dependencies
-        run: opam upgrade --fixup
-        if: steps.cache-opam.outputs.cache-hit == 'true'
-
-      - name: Build
-        run: make build
+      - name: Install examples opam packages
+        run: opam install cmdliner
 
       - name: Check formatting
-        run: make format
+        run: make fmt
+        if: ${{ matrix.os == 'ubuntu-latest' && always() }}
+
+      - name: Run build
+        run: make build
 

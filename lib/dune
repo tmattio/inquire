@@ -1,7 +1,7 @@
 (library
  (name inquire)
  (public_name inquire)
- (libraries lwt inquire.lambda-term)
- (flags -open StdLabels))
+ (synopsis "Prompt users on the terminal")
+ (libraries unix inquire.ansi))
 
 (include_subdirs unqualified)
