@@ -183,19 +183,29 @@ val move_cursor : int -> int -> unit
     if [y < 0]). *)
 
 val move_bol : unit -> unit
-(** [move_bol()] moves the cursor to the beginning of the current line. This is
+(** [move_bol ()] moves the cursor to the beginning of the current line. This is
     useful for progress bars for example. *)
 
 val pos_cursor : unit -> int * int
-(** [pos_cursor()] returns a couple [(x,y)] giving the current position of the
+(** [pos_cursor ()] returns a couple [(x,y)] giving the current position of the
     cursor, [x >= 1] being the column and [y >= 1] the row. *)
 
 val save_cursor : unit -> unit
-(** [save_cursor()] saves the current position of the cursor. *)
+(** [save_cursor ()] saves the current position of the cursor. *)
+
+val show_cursor : unit -> unit
+(** [show_cursor ()] show the cursor.
+
+    Not implemented on Windows. *)
+
+val hide_cursor : unit -> unit
+(** [show_cursor ()] hidex the cursor.
+
+    Not implemented on Windows. *)
 
 val restore_cursor : unit -> unit
-(** [restore_cursor()] replaces the cursor to the position saved with
-    [save_cursor()]. *)
+(** [restore_cursor ()] replaces the cursor to the position saved with
+    [save_cursor ()]. *)
 
 (** {2 Size} *)
 
@@ -204,8 +214,8 @@ val resize : int -> int -> unit
     [height]. *)
 
 val size : unit -> int * int
-(** [size()] returns a pair [(width, height)] giving the size of the terminal in
-    character cells. *)
+(** [size ()] returns a pair [(width, height)] giving the size of the terminal
+    in character cells. *)
 
 (** {2 Scrolling} *)
 

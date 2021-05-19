@@ -118,7 +118,7 @@ module Style : sig
     -> ?default_format:Ansi.style list
     -> ?option_icon_marked:string
     -> ?option_icon_unmarked:string
-    -> ?select_icon:string
+    -> ?pointer_icon:string
     -> unit
     -> t
   (** Create a custom style.
@@ -135,7 +135,7 @@ module Style : sig
         multi-selection prompts.
       - [option_icon_unmarked] is the icon used to mark unselected options in
         multi-selection prompts.
-      - [select_icon] is the icon used to mark the selected option in
+      - [pointer_icon] is the icon used to mark the selected option in
         single-selection prompts. *)
 end
 

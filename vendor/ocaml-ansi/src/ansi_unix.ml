@@ -51,6 +51,10 @@ let save_cursor () = if is_out_channel_atty stdout then printf "\027[s%!"
 
 let restore_cursor () = if is_out_channel_atty stdout then printf "\027[u%!"
 
+let show_cursor () = if is_out_channel_atty stdout then printf "\027[?25h"
+
+let hide_cursor () = if is_out_channel_atty stdout then printf "\027[?25l"
+
 let move_bol () =
   print_string "\r";
   flush stdout

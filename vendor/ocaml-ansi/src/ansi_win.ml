@@ -185,6 +185,10 @@ let save_cursor () =
 let restore_cursor () =
   if is_out_channel_atty stdout then set_cursor_ !saved_x !saved_y
 
+let show_cursor () = ()
+
+let hide_cursor () = ()
+
 let resize x y =
   if is_out_channel_atty stdout then
     (* The specified width and height cannot be less than the width and height

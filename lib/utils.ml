@@ -75,8 +75,11 @@ let with_cbreak ?(when_ = Unix.TCSAFLUSH) fd f =
   else
     f ()
 
-let with_raw ?(when_ = Unix.TCSAFLUSH) fd f =
+let with_raw ?(hide_cursor = false) ?(when_ = Unix.TCSAFLUSH) fd f =
   if Unix.isatty fd then (
+    if hide_cursor then (
+      Ansi.hide_cursor ();
+      flush stdout);
     let term_init = Unix.tcgetattr fd in
     Unix.tcsetattr
       fd
@@ -97,14 +100,22 @@ let with_raw ?(when_ = Unix.TCSAFLUSH) fd f =
       };
     try
       let result = f () in
+      if hide_cursor then (
+        Ansi.show_cursor ();
+        flush stdout);
       Unix.tcsetattr fd Unix.TCSADRAIN term_init;
       result
     with
     | Exn.Exit i ->
+      if hide_cursor then (
+        Ansi.show_cursor ();
+        flush stdout);
       Unix.tcsetattr fd Unix.TCSADRAIN term_init;
       Stdlib.exit i
     | e ->
       Unix.tcsetattr fd Unix.TCSADRAIN term_init;
+      if hide_cursor then
+        Ansi.show_cursor ();
       raise e)
   else
     f ()

@@ -9,7 +9,7 @@ type t =
   ; default_format : Ansi.style list
   ; option_icon_marked : string
   ; option_icon_unmarked : string
-  ; select_icon : string
+  ; pointer_icon : string
   }
 
 let default =
@@ -19,9 +19,9 @@ let default =
   ; error_icon = "X"
   ; error_format = [ Ansi.red; Ansi.bold ]
   ; default_format = []
-  ; option_icon_marked = "[ ]"
-  ; option_icon_unmarked = "[X]"
-  ; select_icon = ">"
+  ; option_icon_marked = "○"
+  ; option_icon_unmarked = "●"
+  ; pointer_icon = "»"
   }
 
 let make
@@ -33,7 +33,7 @@ let make
     ?default_format
     ?option_icon_marked
     ?option_icon_unmarked
-    ?select_icon
+    ?pointer_icon
     ()
   =
   let qmark_icon = Option.value qmark_icon ~default:default.qmark_icon in
@@ -52,7 +52,7 @@ let make
   let option_icon_unmarked =
     Option.value option_icon_unmarked ~default:default.option_icon_unmarked
   in
-  let select_icon = Option.value select_icon ~default:default.select_icon in
+  let pointer_icon = Option.value pointer_icon ~default:default.pointer_icon in
   { qmark_icon
   ; qmark_format
   ; message_format
@@ -61,5 +61,5 @@ let make
   ; default_format
   ; option_icon_marked
   ; option_icon_unmarked
-  ; select_icon
+  ; pointer_icon
   }
