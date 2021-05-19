@@ -1,51 +1,94 @@
-let read_password_unix () =
-  let term_init = Unix.tcgetattr Unix.stdin in
-  let term_no_echo = { term_init with Unix.c_echo = false } in
-  Unix.tcsetattr Unix.stdin Unix.TCSANOW term_no_echo;
-  try
-    let password = read_line () in
-    print_newline ();
-    Unix.tcsetattr Unix.stdin Unix.TCSAFLUSH term_init;
-    password
-  with
-  | e ->
-    Unix.tcsetattr Unix.stdin Unix.TCSAFLUSH term_init;
-    raise e
+module Input_buffer = struct
+  let create () = ref ""
 
-let read_password_windows () =
-  print_string "\x1b[8m";
-  let password = read_line () in
-  print_string "\x1b[0m";
-  print_newline ();
-  password
+  let is_empty t = !t = ""
 
-let read_password () =
-  match Sys.win32 with
-  | true ->
-    read_password_windows ()
-  | false ->
-    read_password_unix ()
+  let add_char t chr = t := !t ^ Char.escaped chr
 
-let rec prompt_until_valid ~validate ~print_prompt ?style message =
-  print_prompt ();
-  let password = read_password () in
-  match validate password with
-  | Ok password ->
-    password
-  | Error err ->
-    Utils.print_err ?style err;
-    prompt_until_valid ~validate ~print_prompt ?style message
+  let rm_last_char t =
+    if is_empty t then
+      ()
+    else
+      t := String.sub !t 0 (String.length !t - 1)
+
+  let get t = !t
+
+  let reset t = t := ""
+end
 
 let prompt ?validate ?default ?style message =
-  let default_str =
-    match default with Some _ -> Some "*****" | None -> None
+  let default_str = "******" in
+  let default_str_opt = Option.map (fun _ -> default_str) default in
+  Utils.print_prompt ?default:default_str_opt ?style message;
+  Ansi.save_cursor ();
+  let buf = Input_buffer.create () in
+  let validate = match validate with None -> fun x -> Ok x | Some fn -> fn in
+  let reset () =
+    Ansi.restore_cursor ();
+    Ansi.erase Ansi.Eol;
+    Input_buffer.reset buf
   in
-  let print_prompt () =
-    Utils.print_prompt ?default:default_str ?style message
+  let rec aux () =
+    let ch = Char.code (input_char stdin) in
+    match ch, default with
+    | 10, Some default ->
+      (* Enter *)
+      if Input_buffer.is_empty buf then (
+        Utils.erase_n_chars (3 + String.length default_str);
+        print_endline default_str;
+        flush stdout;
+        default)
+      else
+        let input = Input_buffer.get buf in
+        (match validate input with
+        | Ok output ->
+          Utils.erase_n_chars
+            (3 + String.length default_str);
+          print_endline default_str;
+          flush stdout;
+          output
+        | Error err ->
+          print_string "\n";
+          flush stdout;
+          Utils.print_err err;
+          reset ();
+          aux ())
+    | 10, None when Input_buffer.is_empty buf ->
+      (* Enter, no input *)
+      aux ()
+    | 10, None ->
+      (* Enter, with input *)
+      let input = Input_buffer.get buf in
+      (match validate input with
+      | Ok output ->
+        print_string "\n";
+        flush stdout;
+        output
+      | Error err ->
+        print_string "\n";
+        flush stdout;
+        Utils.print_err err;
+        reset ();
+        aux ())
+    | 12, _ ->
+      (* Handle ^L *)
+      Ansi.erase Ansi.Screen;
+      Ansi.set_cursor 1 1;
+      Utils.print_prompt ?default:default_str_opt ?style message;
+      Ansi.save_cursor ();
+      aux ()
+    | 3, _ | 4, _ ->
+      (* Handle ^C and ^D *)
+      print_endline "\n\nCancelled by user\n";
+      (* Exit with an exception so we can catch it and revert the changes on
+         stdin. *)
+      raise Exn.Interrupted_by_user
+    | 127, _ ->
+      (* DEL *)
+      Input_buffer.rm_last_char buf;
+      aux ()
+    | code, _ ->
+      Input_buffer.add_char buf (Char.chr code);
+      aux ()
   in
-  match validate with
-  | None ->
-    print_prompt ();
-    read_password ()
-  | Some fn ->
-    prompt_until_valid ~validate:fn ~print_prompt ?style message
+  Utils.with_raw Unix.stdin aux

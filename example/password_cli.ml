@@ -1,13 +1,13 @@
 (* Implementation of the command, we just print the args. *)
 
-let input default message =
+let password default message =
   let validate input =
     if String.length input > 2 then
       Ok input
     else
       Error "Must be more than 2 characters."
   in
-  let value = Inquire.input ?default ~validate message in
+  let value = Inquire.password ?default ~validate message in
   Printf.printf "You entered %S" value
 
 (* Command line interface *)
@@ -20,7 +20,7 @@ let message =
   Arg.(required & pos 0 (some string) None & info [] ~docv:"MESSAGE")
 
 let cmd =
-  ( Term.(const input $ default $ message)
-  , Term.info "input" ~exits:Term.default_exits )
+  ( Term.(const password $ default $ message)
+  , Term.info "password" ~exits:Term.default_exits )
 
 let () = Term.(exit @@ eval cmd)

@@ -29,12 +29,12 @@ let prompt_auto_enter ?default print_prompt =
       aux ()
     | 12, _ ->
       (* Handle ^L *)
-      Ansi.erase Ansi.Above;
+      Ansi.erase Ansi.Screen;
       Ansi.set_cursor 1 1;
       print_prompt ();
       aux ()
-    | 3, _ ->
-      (* Handle ^C *)
+    | 3, _ | 4, _ ->
+      (* Handle ^C and ^D *)
       print_endline "\n\nCancelled by user\n";
       (* Exit with an exception so we can catch it and revert the changes on
          stdin. *)
@@ -105,7 +105,7 @@ let prompt_no_auto_enter ?default print_prompt =
         aux None)
     | 12 ->
       (* Handle ^L *)
-      Ansi.erase Ansi.Above;
+      Ansi.erase Ansi.Screen;
       Ansi.set_cursor 1 1;
       print_prompt ();
       Option.iter

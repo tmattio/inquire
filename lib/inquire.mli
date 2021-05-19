@@ -1,6 +1,8 @@
 (** Inquire is a high-level library to create interactive command line
     interfaces. *)
 
+exception Interrupted_by_user
+
 module Style : sig
   (** Module to customize Inquire prompts. *)
 

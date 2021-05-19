@@ -1,3 +1,5 @@
+exception Interrupted_by_user = Exn.Interrupted_by_user
+
 module Style = Style
 
 let confirm = Prompt_confirm.prompt

@@ -1,6 +1,4 @@
-exception Exit of int
-
-let exit i = raise (Exit i)
+let exit i = raise (Exn.Exit i)
 
 let print_prompt ?default ?(style = Style.default) message =
   let () =
@@ -30,9 +28,9 @@ let print_err ?(style = Style.default) err =
   let () =
     match style.Style.error_icon with
     | "" ->
-      prerr_endline (Ansi.sprintf style.Style.error_format "%s" err)
+      prerr_string (Ansi.sprintf style.Style.error_format "%s" err)
     | _ ->
-      prerr_endline
+      prerr_string
         (Ansi.sprintf
            style.Style.error_format
            "%s %s"
@@ -58,7 +56,7 @@ let with_cbreak ?(when_ = Unix.TCSAFLUSH) fd f =
       Unix.tcsetattr fd Unix.TCSADRAIN term_init;
       result
     with
-    | Exit i ->
+    | Exn.Exit i ->
       Unix.tcsetattr fd Unix.TCSADRAIN term_init;
       Stdlib.exit i
     | e ->
@@ -92,7 +90,7 @@ let with_raw ?(when_ = Unix.TCSAFLUSH) fd f =
       Unix.tcsetattr fd Unix.TCSADRAIN term_init;
       result
     with
-    | Exit i ->
+    | Exn.Exit i ->
       Unix.tcsetattr fd Unix.TCSADRAIN term_init;
       Stdlib.exit i
     | e ->
