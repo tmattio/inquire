@@ -20,16 +20,36 @@ esy add @opam/inquire
 
 ## Usage
 
-### In OCaml
+### Confirm
+
+Prompt the user to answer the given message with "y" or "n".
 
 ```ocaml
-let () = Inquire.Utils.greet "World"
+Inquire.confirm "Are you sure?"
 ```
 
-### In Reason
+### Raw List
+
+Prompt the user to chose a value from the given options.
 
 ```ocaml
-Inquire.Utils.greet("World");
+Inquire.raw_select "What's your favorite movie?" ~options:[ "Choice 1" ; "Choice 2" ]
+```
+
+### Password
+
+Prompt the user to enter a password that will be hidden with stars (`*`).
+
+```ocaml
+Inquire.password "Enter your password:"
+```
+
+### Input
+
+Prompt the user to input a string.
+
+```ocaml
+Inquire.input "Enter a value:"
 ```
 
 ## Contributing
