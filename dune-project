@@ -19,8 +19,7 @@
 
 (package
  (name inquire)
- (synopsis
-  "\240\159\142\168 Create beautiful interactive command line interface in OCaml")
+ (synopsis "Create beautiful interactive command line interface in OCaml")
  (description
   "\240\159\142\168 Create beautiful interactive command line interface in OCaml.")
  (depends
