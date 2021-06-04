@@ -1,3 +1,10 @@
+# 0.3.1 - 2021-06-04
+
+## Fixed
+
+- Fix an issue with terminal scroll down.
+- Fix an issue with unsupported ANSI sequences for cursor save/restore.
+
 # 0.3.0 - 2021-05-17
 
 ## Added

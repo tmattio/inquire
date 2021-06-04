@@ -26,4 +26,5 @@
   (ocaml
    (>= 4.08.0))
   dune
+  uutf
   (odoc :with-doc)))

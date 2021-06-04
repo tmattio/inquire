@@ -12,6 +12,7 @@ bug-reports: "https://github.com/tmattio/inquire/issues"
 depends: [
   "ocaml" {>= "4.08.0"}
   "dune" {>= "2.7"}
+  "uutf"
   "odoc" {with-doc}
 ]
 build: [
